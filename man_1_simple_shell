@@ -1,0 +1,69 @@
+.Dd 11/02/2021
+.Dt simple_shell 1
+.Os Linux
+.Sh NAME
+.Nm simple_shell
+.Op F1 command
+args ...
+.Sh DESCRIPTION
+.Nm simple_shell (hsh)
+is an interpretor which accepts input from command line and standard \
+input and performs excution.
+.Nm
+Built using c programming language and designed to interprate d \
+ifferent commands by interacting with linux or unix systems path.
+.Pp
+.B
+$PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+.Pp 
+.F1 Overview
+.It 
+simple_shell reads lines from standard input, interprets them, and performs excution.
+.Pp
+.F1 Invocation
+.It
+compile using gcc and flags -wall -werror -wextra -pedantic *.c -o hsh and after \
+that run created excutable file, ./hsh.
+.Pp
+.F1 Argument list 
+.It
+hsh reads the line and accepts the first argument as a command and the rest as parameters \
+of the command.
+.Pp
+.F1 sample commands
+.It
+$ ls 
+.br
+AUTHORS README.md main.h man_1_simple_shell shell.c 
+.br
+.Pp 
+.Sh EXIT STATUS
+If the last command executed is successful it returns 0, otherwise EXIT_FAILURE.
+.Pp
+.Sh Environment
+The Environment variabe is an aray of strings which has the structure 'name=value' that \
+contains path of programs and files which are useful for the shell to operate.
+.Pp
+.Sh FILES 
+.It
+.B 
+AUTHORS - contains list of contributors of the project
+.It
+.B 
+main.h - contains all prototypes of all functions used in the project
+.It
+.B 
+shell.c - contains the main function for the entry of the program
+.It
+.B 
+man_1_simple_shell - this page
+.It
+.B 
+README.md - this file contains a brief description on how a simple shell works
+.Pp
+.Sh AUTHORS
+.Pp
+.It
+Samra Barnabas
+.It
+Zelalem Welelaw
