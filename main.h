@@ -29,7 +29,7 @@ int execute(char **argv);
 /*Function to search environment*/
 
 char **search_env(const char *name);
-char *get_dir(char **cmd);
+char *get_dir(char **av);
 int env(void);
 
 #endif

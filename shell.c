@@ -33,7 +33,7 @@ int execute(char **argv)
 		}
 		else if (pid > 0)
 		{
-			waitpid(pid, &status, 0);
+			waitpid(pid, &status, WUNTRACED);
 		}
 		else
 		{
