@@ -25,7 +25,7 @@ int _putchar(char c);
 
 void set_prompt(void);
 char **tokenize(char *line);
-int execute(char **argv);
+int execute(char **argv, char **envp);
 /*Function to search environment*/
 
 char **search_env(const char *name);
