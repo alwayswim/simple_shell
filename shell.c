@@ -1,64 +1,72 @@
 #include "main.h"
-#include <stdlib.h>
-#include <sys/wait.h>
-#include <unistd.h>
 
 /**
-* execute- to execute program given to the child
+* execute- to execute the child process
 *
-* @argv: the command lines it introduces to the program
+* @argv: the command given
+*
+* @envp: the environment
+*
+* @get_stat: the status of command when concatenated
 *
 * Return: 0
 */
-
-int execute(char **argv, char **envp)
+int execute(char **argv, char **envp, int get_stat)
 {
 	pid_t pid;
 	int status;
 
 	pid = fork();
-	if (pid == 0)
+	if (pid  < 0)
+	{
+		perror("fork ");
+	}
+	else if (pid == 0)
 	{
 		if (execve(argv[0], argv, envp) == -1)
 		{
-			perror("execve ");
+			perror("./hsh ");
 		}
-	}
-	else if (pid > 0)
-	{
-		waitpid(pid, &status, 0);
+		else
+		{
+			free(argv[0]);
+			free(argv);
+		}
 	}
 	else
 	{
-		perror("Fork ");
-		exit(EXIT_FAILURE);
+		if (get_stat == 0)
+		{
+			waitpid(pid, &status, WUNTRACED);
+		}
 	}
 	return (0);
 }
-
 /**
-* main- used to bring all functions together
+* main - to create a shell
 *
-* Return: 0
+* @argc: unused argument
+*
+* @argv: unused command line argument
+*
+* @envp: to compare with environment variable
+*
+* Return: Always 0.
 */
-
-int main(int __attribute__((__unused__))argc, char __attribute__((__unused__))**argv, char **envp)
+int main(int argc, char __attribute__((__unused__)) **argv, char **envp)
 {
 	char *line;
-	size_t n = 10;
-	char **av;
-
-
+	char **var, **av;
+	int dir = 0;
+	(void) argc;
+	signal(SIGINT, signal_handling);
 	for (;;)
 	{
 		set_prompt();
-		if (getline(&line, &n, stdin) == -1)
-		{
-			break;
-		}
+		line = get_line();
+		av = tokenize(line);
 		if (line[0] == '\n')
 			continue;
-		av = tokenize(line); 
 		if (_strcmp(av[0], "exit") == 0)
 		{
 			exit(0);
@@ -67,7 +75,14 @@ int main(int __attribute__((__unused__))argc, char __attribute__((__unused__))**
 		{
 			env();
 		}
-		execute(av, envp);
+		else
+		{
+			var = search_env();
+			dir = get_stat(av, var);
+			execute(av, envp, dir);
+		}
+		free(av);
+		free(line);
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }

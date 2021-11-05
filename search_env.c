@@ -20,93 +20,100 @@ return (0);
 }
 
 /**
-* search_env - searches environment variables and creates 2 strings
-*              of the name and value
+* search_env - searches environment variables for path
 *
-* @name: the name of the variable to be searched
-*
-* Return: pointer to the array of strings
+* Return: pointer to PATH
 */
 
-char **search_env(const char *name)
+char **search_env()
 {
-	int i, j, len;
-	char *rmv, *path;
-	char **rm;
+	int i, len;
+	char **path;
+	char *name;
 
+	name = "PATH";
 	len = _strlen(name);
 	i = 0;
 	while (environ[i] != NULL)
 	{
 		if (_strncmp(name, environ[i], len) == 0)
 		{
-			path = environ[i];
-			j = 0;
-			rm = malloc(sizeof(char *) * 2);
-			if (rm  == NULL)
-			{
-				perror("Error in allocating memory");
-				return (0);
-			}
-			rmv = strtok(path, "=");
-			while (rmv != NULL)
-			{
-				rm[j] = rmv;
-				j++;
-				rmv = strtok(NULL, "=");
-			}
-			rm[j] = NULL;
+			path = get_dir(environ[i]);
 		}
 	i++;
 	}
-	return (rm);
+	return (path);
 }
 
 /**
-* get_dir - to get the directory of the command given and the concatenate
-*	    it with its directory
+* get_dir - to get the directories of the path
 *
-* @av: the command given
+* @path: the pointer to the path
 *
-* Return: the path to the command
+* Return: the directory list
 */
-char *get_dir(char **av)
+char **get_dir(char *path)
 {
-	int l, k = 0;
-	char **rm, **tok;
-	char *direct, *token, *cwd = getcwd(NULL, 0);
-	struct stat st;
-	const char *res;
+	int k = 0;
+	char **rm;
+	char *rmv, *new_path = NULL;
 
-	rm = search_env("PATH");
-	tok = malloc(sizeof(char *) * 10);
-	if (tok == NULL)
+
+	rm = malloc(sizeof(char *) * 15);
+	if (path == NULL)
 	{
+		free(path);
 		return (0);
-		free(tok);
 	}
-	direct = rm[1];
-	token = strtok(direct, ":");
-	while (token != NULL)
+	if (rm == NULL)
 	{
-		tok[k] = token;
+		free(path);
+		return (0);
+	}
+	new_path = _strdup(path);
+	rmv = strtok(new_path, "=:");
+	while (rmv != NULL)
+	{
+		rm[k] = rmv;
 		k++;
-		token = strtok(NULL, ":");
+		rmv = strtok(NULL, "=:");
 	}
-	tok[k] = NULL;
-	for (l = 0; l < k && tok != NULL; l++)
+	rm[k] = NULL;
+	return (rm);
+}
+/**
+* get_stat- to check the status of a concatenated command
+*
+* @argv: command given
+*
+* @path: the path directories
+*
+* Return: 0
+*
+*/
+int get_stat(char **argv, char **path)
+{
+	char *concat = NULL, *dir = NULL;
+	int i;
+	struct stat sb;
+
+	if (path == NULL)
 	{
-		res = tok[l];
-		if (chdir(res) == 0)
+		free(path);
+		free(argv);
+	}
+	for (i = 0; path[i] != NULL ; i++)
+	{
+		concat = _strcat(path[i], "/");
+		dir = _strcat(concat, argv[0]);
+		if (stat(dir, &sb) == 0 && (sb.st_mode & S_IXUSR))
 		{
-			if (stat(av[0], &st) == 0)
-			{
-				tok[l] = _strcat(tok[l], "/");
-				av[0] = _strcat(tok[l], av[0]);
-				break;
-			}
+			argv[0] = dir;
+			free(path);
+			free(path[0]);
+			break;
 		}
 	}
-	chdir(cwd);
-	return (av[0]);
+	free(path[0]);
+	return (0);
 }

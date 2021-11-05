@@ -62,3 +62,32 @@ void _puts(char *str)
 	}
 	_putchar('\n');
 }
+/**
+ * _strdup - copes a string to another
+ * @str: the array
+ * Return: pointer of sting copied
+ */
+char *_strdup(char *str)
+{
+	int i, j;
+	char *dest;
+
+	if (str == NULL)
+		return (0);
+	i = 0;
+	while (str[i])
+	{
+		i++;
+	}
+	dest = malloc(sizeof(char *) * i);
+	if (dest == NULL)
+	{
+		free(dest);
+		return (NULL);
+	}
+	for (j = 0; j < i; j++)
+	{
+		dest[j] = str[j];
+	}
+	return (dest);
+}
