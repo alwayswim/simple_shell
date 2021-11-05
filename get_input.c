@@ -67,7 +67,6 @@ char *get_line(void)
 		{
 			write(STDOUT_FILENO, "\n", 1);
 		}
-		free(line);
 		exit(0);
 	}
 	if (character == 1)

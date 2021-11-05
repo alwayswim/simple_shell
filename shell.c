@@ -26,12 +26,9 @@ int execute(char **argv, char **envp, int get_stat)
 		if (execve(argv[0], argv, envp) == -1)
 		{
 			perror("./hsh ");
+			exit (1);
 		}
-		else
-		{
-			free(argv[0]);
-			free(argv);
-		}
+		exit (0);
 	}
 	else
 	{
