@@ -1,12 +1,12 @@
 #include "main.h"
 
 /**
-* env - to print the environment variables
+* env_fun - to print the environment variables
 *
 * Return: 0.
-**/
+*/
 
-int env(void)
+int env_fun(void)
 {
 	int i;
 
@@ -16,104 +16,69 @@ int env(void)
 		_puts(environ[i]);
 	i++;
 	}
-return (0);
+	return (0);
 }
 
 /**
-* search_env - searches environment variables for path
+* get_env - to get value of an environment variable
 *
-* Return: pointer to PATH
+* @name: the name of environment variable
+*
+* Return: pointer to the value
 */
 
-char **search_env()
+char **get_env(char *name)
 {
-	int i, len;
-	char **path;
-	char *name;
+	int i, len, j;
+	char *rmv, *path, *new_name;
+	char **rm;
 
-	name = "PATH";
 	len = _strlen(name);
 	i = 0;
 	while (environ[i] != NULL)
 	{
 		if (_strncmp(name, environ[i], len) == 0)
 		{
-			path = get_dir(environ[i]);
+			path = environ[i];
+			j = 0;
+			rm = malloc(sizeof(char *) * 15);
+			new_name = _strdup(path);
+			rmv = strtok(new_name, "=:");
+			while (rmv != NULL)
+			{
+				rm[j] = rmv;
+				j++;
+				rmv = strtok(NULL, "=:");
+			}
+			rm[j] = NULL;
 		}
 	i++;
 	}
-	return (path);
-}
-
-/**
-* get_dir - to get the directories of the path
-*
-* @path: the pointer to the path
-*
-* Return: the directory list
-*/
-char **get_dir(char *path)
-{
-	int k = 0;
-	char **rm;
-	char *rmv, *new_path = NULL;
-
-
-	rm = malloc(sizeof(char *) * 15);
-	if (path == NULL)
-	{
-		free(path);
-		return (0);
-	}
-	if (rm == NULL)
-	{
-		free(path);
-		return (0);
-	}
-	new_path = _strdup(path);
-	rmv = strtok(new_path, "=:");
-	while (rmv != NULL)
-	{
-		rm[k] = rmv;
-		k++;
-		rmv = strtok(NULL, "=:");
-	}
-	rm[k] = NULL;
 	return (rm);
 }
 /**
-* get_stat- to check the status of a concatenated command
+* get_stat - to check if file exists
 *
 * @argv: command given
 *
-* @path: the path directories
+* @path: the environment variable given
 *
-* Return: 0
-*
+* Return: the path
 */
 int get_stat(char **argv, char **path)
 {
-	char *concat = NULL, *dir = NULL;
-	int i;
-	struct stat sb;
+	int m;
+	char *cmd;
 
-	if (path == NULL)
+	for (m = 0; path[m] != NULL; m++)
 	{
-		free(path);
-		free(argv);
-	}
-	for (i = 0; path[i] != NULL ; i++)
-	{
-		concat = _strcat(path[i], "/");
-		dir = _strcat(concat, argv[0]);
-		if (stat(dir, &sb) == 0 && (sb.st_mode & S_IXUSR))
+		cmd = _strcat(path[m], "/");
+		cmd = _strcat(path[m], argv[0]);
+		if (access(cmd, F_OK) == 0)
 		{
-			argv[0] = dir;
-			free(path);
-			free(path[0]);
+			argv[0] = cmd;
 			break;
 		}
 	}
-	free(path[0]);
 	return (0);
 }
