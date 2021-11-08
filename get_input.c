@@ -17,34 +17,6 @@ void set_prompt(void)
 		write(STDOUT_FILENO, prompt, _strlen(prompt));
 	}
 }
-/**
-* tokenize - create substring of a given string
-*
-* @line: the line to be used
-*
-* Return: pointer to teh array of strings
-*/
-char **tokenize(char *line)
-{
-	int i, len, size = BUF_SIZE;
-	char **tok;
-	char *token;
-
-	len = _strlen(line);
-	if (line[len - 1] == '\n')
-		line[len - 1] = '\0';
-	tok = malloc(sizeof(char *) * size);
-	i = 0;
-	token = strtok(line, " ");
-	while (token != NULL)
-	{
-		tok[i] = token;
-		i++;
-		token = strtok(NULL, " ");
-	}
-	tok[i] = NULL;
-	return (tok);
-}
 
 /**
 * get_line - to get input from the terminal and then store it in string
@@ -60,7 +32,7 @@ char *get_line(void)
 	int i;
 
 	character = getline(&line, &n, stdin);
-	if (character == EOF)
+	if (character == -1)
 	{
 		i = isatty(STDIN_FILENO);
 		if (i == 1)
@@ -75,6 +47,35 @@ char *get_line(void)
 		return (0);
 	}
 	return (line);
+}
+/**
+* tokenize - create substring of a given string
+*
+* @line: the line to be used
+*
+* Return: pointer to teh array of strings
+*/
+char **tokenize(char *line)
+{
+	int i, size = 50;
+	char **tok;
+	char *token;
+
+	if (line == NULL)
+	{
+		return (0);
+	}
+	tok = malloc(sizeof(char *) * size);
+	i = 0;
+	token = strtok(line, " \n");
+	while (token != NULL)
+	{
+		tok[i] = token;
+		i++;
+		token = strtok(NULL, " \n");
+	}
+	tok[i] = NULL;
+	return (tok);
 }
 /**
 * signal_handling - to wait for signal ctrl + c then to

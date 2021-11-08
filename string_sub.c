@@ -1,30 +1,6 @@
 #include "main.h"
 
 /**
- * _strcpy - to copy string from source to destination
- *
- * @dest: destination to be copied to
- *
- * @src: origin to be copied from
- *
- * Return: destination string
- */
-
-char *_strcpy(char *dest, char *src)
-{
-	int i;
-
-	i = 0;
-	while (src[i] != '\0')
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return (dest);
-}
-
-/**
  * _strcat - fnction to concatenate a string to another string
  *
  * @dest: string to concatenate to
@@ -61,7 +37,7 @@ char *_strcat(char *dest, char *src)
  * Return: The length
  */
 
-int _strlen(const char *src)
+int _strlen(char *src)
 {
 	int i;
 
@@ -83,7 +59,7 @@ int _strlen(const char *src)
  * Return: the byte of the first string minus the second
  */
 
-int _strcmp(const char *s1, const char *s2)
+int _strcmp(char *s1, char *s2)
 {
 	while (*s1 && (*s1 == *s2))
 	{
@@ -94,30 +70,30 @@ int _strcmp(const char *s1, const char *s2)
 }
 
 /**
-* _strncat - to concatenate only n bytes
+* _strncmp- to compare the first n bytes fo a string
 *
-* @dest: destination for concatenation
+* @s1: string to be compared
 *
-* @src: source of concatenation
+* @s2: string to be compared
 *
-* @n: number of bytes to concatenate
+* @n: the number of bytes to compare
 *
-* Return: Destination
+* Return: the diffrence in bytes of the first characters that are different
 */
 
-char *_strncat(char *dest, char *src, int n)
+int _strncmp(char *s1, char *s2, int n)
 {
-	int i, j;
+	int i;
 
 	i = 0;
-	while (dest[i] != '\0')
+	while (*s1 && *s2 && i < n)
 	{
+		return (*s1 - *s2);
 		i++;
+		s1++;
+		s2++;
 	}
-	for (j = 0; src[j] != '\0' && j < n; j++)
-	{
-		dest[i + j] = src[j];
-	}
-	dest[i + j] = '\0';
-	return (dest);
+	if (n == 0)
+		return (0);
+	return (0);
 }
