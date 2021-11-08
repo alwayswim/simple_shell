@@ -26,9 +26,8 @@ int execute(char **argv, char **envp, int get_stat)
 		if (execve(argv[0], argv, envp) == -1)
 		{
 			perror("./hsh ");
-			exit (1);
 		}
-		exit (0);
+		exit(0);
 	}
 	else
 	{
@@ -50,36 +49,39 @@ int execute(char **argv, char **envp, int get_stat)
 *
 * Return: Always 0.
 */
-int main(int argc, char __attribute__((__unused__)) **argv, char **envp)
+int main(int argc, char __attribute__((__unused__))**argv, char **envp)
 {
-	char *line;
-	char **var, **av;
+	char **av, **var;
 	int dir = 0;
-	(void) argc;
+	char *line;
+	(void)argc;
+
 	signal(SIGINT, signal_handling);
 	for (;;)
 	{
 		set_prompt();
 		line = get_line();
 		av = tokenize(line);
-		if (line[0] == '\n')
-			continue;
+		if (line == NULL)
+		{
+			return (0);
+		}
 		if (_strcmp(av[0], "exit") == 0)
 		{
 			exit(0);
 		}
 		if (_strcmp(av[0], "env") == 0)
 		{
-			env();
+			env_fun();
 		}
 		else
 		{
-			var = search_env();
+			var = get_env("PATH");
 			dir = get_stat(av, var);
 			execute(av, envp, dir);
 		}
-		free(av);
 		free(line);
+		free(av);
 	}
-	return (EXIT_SUCCESS);
+	return (0);
 }
