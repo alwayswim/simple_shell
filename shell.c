@@ -80,8 +80,6 @@ int main(int argc, char __attribute__((__unused__))**argv, char **envp)
 			dir = get_stat(av, var);
 			execute(av, envp, dir);
 		}
-		free(line);
-		free(av);
 	}
 	return (0);
 }
