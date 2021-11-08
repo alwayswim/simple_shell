@@ -34,7 +34,8 @@ of the command.
 .It
 $ ls 
 .br
-AUTHORS README.md main.h man_1_simple_shell shell.c 
+AUTHORS README.md get_input.c main.h man_1_simple_shell search_env.c shell.c string_sub.c \
+string_sub2.c 
 .br
 .Pp 
 .Sh EXIT STATUS
@@ -54,6 +55,20 @@ main.h - contains all prototypes of all functions used in the project
 .It
 .B 
 shell.c - contains the main function for the entry of the program
+.It
+.B
+get_input.c - contains set_prompt function to prompt on the screen
+.It
+.B
+search_env.c - contains env funtion which prints environment variables
+.It
+.B
+string_sub.c - contains _strcpy function to copy string from source to \
+destination
+.It
+.B
+string_sub2.c - contains _strncmp function to compare the first n bytes \
+fo a string
 .It
 .B 
 man_1_simple_shell - this page
