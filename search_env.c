@@ -1,12 +1,12 @@
 #include "main.h"
 
 /**
-* env - to print the environment variables
+* env_fun - to print the environment variables
 *
 * Return: 0.
-**/
+*/
 
-int env(void)
+int env_fun(void)
 {
 	int i;
 
@@ -16,22 +16,21 @@ int env(void)
 		_puts(environ[i]);
 	i++;
 	}
-return (0);
+	return (0);
 }
 
 /**
-* search_env - searches environment variables and creates 2 strings
-*              of the name and value
+* get_env - to get value of an environment variable
 *
-* @name: the name of the variable to be searched
+* @name: the name of environment variable
 *
-* Return: pointer to the array of strings
+* Return: pointer to the value
 */
 
-char **search_env(const char *name)
+char **get_env(char *name)
 {
-	int i, j, len;
-	char *rmv, *path;
+	int i, len, j;
+	char *rmv, *path, *new_name;
 	char **rm;
 
 	len = _strlen(name);
@@ -42,18 +41,14 @@ char **search_env(const char *name)
 		{
 			path = environ[i];
 			j = 0;
-			rm = malloc(sizeof(char *) * 2);
-			if (rm  == NULL)
-			{
-				perror("Error in allocating memory");
-				return (0);
-			}
-			rmv = strtok(path, "=");
+			rm = malloc(sizeof(char *) * 15);
+			new_name = _strdup(path);
+			rmv = strtok(new_name, "=:");
 			while (rmv != NULL)
 			{
 				rm[j] = rmv;
 				j++;
-				rmv = strtok(NULL, "=");
+				rmv = strtok(NULL, "=:");
 			}
 			rm[j] = NULL;
 		}
@@ -61,52 +56,29 @@ char **search_env(const char *name)
 	}
 	return (rm);
 }
-
 /**
-* get_dir - to get the directory of the command given and the concatenate
-*	    it with its directory
+* get_stat - to check if file exists
 *
-* @av: the command given
+* @argv: command given
 *
-* Return: the path to the command
+* @path: the environment variable given
+*
+* Return: the path
 */
-char *get_dir(char **av)
+int get_stat(char **argv, char **path)
 {
-	int l, k = 0;
-	char **rm, **tok;
-	char *direct, *token, *cwd = getcwd(NULL, 0);
-	struct stat st;
-	const char *res;
+	int m;
+	char *cmd;
 
-	rm = search_env("PATH");
-	tok = malloc(sizeof(char *) * 10);
-	if (tok == NULL)
+	for (m = 0; path[m] != NULL; m++)
 	{
-		return (0);
-		free(tok);
-	}
-	direct = rm[1];
-	token = strtok(direct, ":");
-	while (token != NULL)
-	{
-		tok[k] = token;
-		k++;
-		token = strtok(NULL, ":");
-	}
-	tok[k] = NULL;
-	for (l = 0; l < k && tok != NULL; l++)
-	{
-		res = tok[l];
-		if (chdir(res) == 0)
+		cmd = _strcat(path[m], "/");
+		cmd = _strcat(path[m], argv[0]);
+		if (access(cmd, F_OK) == 0)
 		{
-			if (stat(av[0], &st) == 0)
-			{
-				tok[l] = _strcat(tok[l], "/");
-				av[0] = _strcat(tok[l], av[0]);
-				break;
-			}
+			argv[0] = cmd;
+			break;
 		}
 	}
-	chdir(cwd);
-	return (av[0]);
+	return (0);
 }

@@ -17,6 +17,37 @@ void set_prompt(void)
 		write(STDOUT_FILENO, prompt, _strlen(prompt));
 	}
 }
+
+/**
+* get_line - to get input from the terminal and then store it in string
+*
+* Return: the input in string form
+*/
+
+char *get_line(void)
+{
+	char *line = NULL;
+	size_t n = 0;
+	ssize_t character;
+	int i;
+
+	character = getline(&line, &n, stdin);
+	if (character == -1)
+	{
+		i = isatty(STDIN_FILENO);
+		if (i == 1)
+		{
+			write(STDOUT_FILENO, "\n", 1);
+		}
+		exit(0);
+	}
+	if (character == 1)
+	{
+		free(line);
+		return (0);
+	}
+	return (line);
+}
 /**
 * tokenize - create substring of a given string
 *
@@ -26,27 +57,38 @@ void set_prompt(void)
 */
 char **tokenize(char *line)
 {
-	int i, len, j = 10;
+	int i, size = 50;
 	char **tok;
 	char *token;
 
-	len = _strlen(line);
-	if (line[len - 1] == '\n')
-		line[len - 1] = '\0';
-	tok = malloc(sizeof(char *) * j);
-	if (tok == NULL)
+	if (line == NULL)
 	{
-		free(tok);
 		return (0);
 	}
+	tok = malloc(sizeof(char *) * size);
 	i = 0;
-	token = strtok(line, " ");
+	token = strtok(line, " \n");
 	while (token != NULL)
 	{
 		tok[i] = token;
 		i++;
-		token = strtok(NULL, " ");
+		token = strtok(NULL, " \n");
 	}
 	tok[i] = NULL;
 	return (tok);
+}
+/**
+* signal_handling - to wait for signal ctrl + c then to
+*		    print a newline and promp
+*
+* @signal: the signal to be sent
+*
+* Return: Nothing
+*/
+
+void signal_handling(int __attribute__((__unused__))signal)
+{
+	char *prompt = "\n$ ";
+
+	write(STDOUT_FILENO, prompt, _strlen(prompt));
 }

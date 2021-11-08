@@ -8,28 +8,32 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <sys/stat.h>
+/*global variable*/
 
 extern char **environ;
 
 /*Function for handling strings*/
 
-char *_strcpy(char *dest, char *src);
 char *_strcat(char *dest, char *src);
-int _strlen(const char *src);
-int _strcmp(const char *s1, const char *s2);
-int _strncmp(const char *s1, const char *s2, int n);
+int _strcmp(char *s1, char *s2);
 void _puts(char *str);
 int _putchar(char c);
+char *_strdup(char *str);
+int _strlen(char *src);
+int _strncmp(char *s1, char *s2, int n);
 
 /*Function to create a shell*/
 
 void set_prompt(void);
+int execute(char **argv, char **envp, int status);
+char *get_line(void);
+void signal_handling(int __attribute__((__unused__))signal);
 char **tokenize(char *line);
-int execute(char **argv, char **envp);
+
 /*Function to search environment*/
 
-char **search_env(const char *name);
-char *get_dir(char **cmd);
-int env(void);
+int get_stat(char **argv, char **path);
+int env_fun(void);
+char **get_env(char *name);
 
 #endif
