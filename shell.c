@@ -29,7 +29,10 @@ int execute(char **argv, char **envp, int sum)
 		}
 		else if (pid == 0)
 		{
-			execve(dir, argv, envp);
+			if (execve(dir, argv, envp) == -1)
+			{
+				_perror("");
+			}
 		}
 		else
 		{
@@ -73,7 +76,7 @@ int main(int argc, char __attribute__((__unused__))**argv, char **envp)
 		}
 		if (_strcmp(av[0], "exit") == 0)
 		{
-			return (0);
+			exit(0);
 		}
 		if (_strcmp(av[0], "env") == 0)
 		{

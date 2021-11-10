@@ -39,7 +39,7 @@ char *get_line(void)
 		{
 			write(STDOUT_FILENO, "\n", 1);
 		}
-		return (0);
+		exit(0);
 	}
 	if (character == 1)
 	{
