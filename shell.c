@@ -7,34 +7,38 @@
 *
 * @envp: the environment
 *
-* @get_stat: the status of command when concatenated
+* @sum: the number of prompts printed
 *
 * Return: 0
 */
-int execute(char **argv, char **envp, int get_stat)
+int execute(char **argv, char **envp, int sum)
 {
 	pid_t pid;
 	int status;
+	char **var;
+	char *dir;
 
-	pid = fork();
-	if (pid  < 0)
+	var = get_env("PATH");
+	dir = get_file(argv, var);
+	if (access(dir, F_OK) == 0)
 	{
-		perror("fork ");
-	}
-	else if (pid == 0)
-	{
-		if (execve(argv[0], argv, envp) == -1)
+		pid = fork();
+		if (pid  < 0)
 		{
-			perror("./hsh ");
+			perror("fork ");
 		}
-		exit(0);
-	}
-	else
-	{
-		if (get_stat == 0)
+		else if (pid == 0)
+		{
+			execve(dir, argv, envp);
+		}
+		else
 		{
 			waitpid(pid, &status, WUNTRACED);
 		}
+	}
+	else
+	{
+		_perror(argv[0], sum);
 	}
 	return (0);
 }
@@ -51,8 +55,8 @@ int execute(char **argv, char **envp, int get_stat)
 */
 int main(int argc, char __attribute__((__unused__))**argv, char **envp)
 {
-	char **av, **var;
-	int dir = 0;
+	char **av;
+	int sum = 0;
 	char *line;
 	(void)argc;
 
@@ -60,6 +64,7 @@ int main(int argc, char __attribute__((__unused__))**argv, char **envp)
 	for (;;)
 	{
 		set_prompt();
+		sum += 1;
 		line = get_line();
 		av = tokenize(line);
 		if (line == NULL)
@@ -68,18 +73,13 @@ int main(int argc, char __attribute__((__unused__))**argv, char **envp)
 		}
 		if (_strcmp(av[0], "exit") == 0)
 		{
-			exit(0);
+			return (0);
 		}
 		if (_strcmp(av[0], "env") == 0)
 		{
 			env_fun();
 		}
-		else
-		{
-			var = get_env("PATH");
-			dir = get_stat(av, var);
-			execute(av, envp, dir);
-		}
+		execute(av, envp, sum);
 	}
 	return (0);
 }

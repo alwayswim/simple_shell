@@ -30,7 +30,7 @@ int env_fun(void)
 char **get_env(char *name)
 {
 	int i, len, j;
-	char *rmv, *path, *new_name;
+	char *rmv, *path;
 	char **rm;
 
 	len = _strlen(name);
@@ -39,14 +39,13 @@ char **get_env(char *name)
 	{
 		if (_strncmp(name, environ[i], len) == 0)
 		{
-			path = environ[i];
+			path = _strdup(environ[i]);
 			j = 0;
 			rm = malloc(sizeof(char *) * 15);
-			new_name = _strdup(path);
-			rmv = strtok(new_name, "=:");
+			rmv = strtok(path, "=:");
 			while (rmv != NULL)
 			{
-				rm[j] = rmv;
+				rm[j] = _strdup(rmv);
 				j++;
 				rmv = strtok(NULL, "=:");
 			}
@@ -57,7 +56,7 @@ char **get_env(char *name)
 	return (rm);
 }
 /**
-* get_stat - to check if file exists
+* get_file - to check if file exists
 *
 * @argv: command given
 *
@@ -65,7 +64,7 @@ char **get_env(char *name)
 *
 * Return: the path
 */
-int get_stat(char **argv, char **path)
+char *get_file(char **argv, char **path)
 {
 	int m;
 	char *cmd;
@@ -73,12 +72,11 @@ int get_stat(char **argv, char **path)
 	for (m = 0; path[m] != NULL; m++)
 	{
 		cmd = _strcat(path[m], "/");
-		cmd = _strcat(path[m], argv[0]);
+		cmd = _strcat(cmd, argv[0]);
 		if (access(cmd, F_OK) == 0)
 		{
 			argv[0] = cmd;
-			break;
 		}
 	}
-	return (0);
+	return (argv[0]);
 }
