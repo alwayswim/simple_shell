@@ -31,7 +31,7 @@ int execute(char **argv, char **envp, int sum)
 		{
 			if (execve(dir, argv, envp) == -1)
 			{
-				_perror("");
+				perror("");
 			}
 		}
 		else
