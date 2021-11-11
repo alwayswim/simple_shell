@@ -15,11 +15,15 @@ int execute(char **argv, char **envp, int sum)
 {
 	pid_t pid;
 	int status;
-	char **var;
-	char *dir;
+	char **var, *dir;
 
-	var = get_env("PATH");
-	dir = get_file(argv, var);
+	var = get_env("PATH"), dir = get_file(argv, var);
+	if (argv == NULL)
+	{
+		free(var);
+		free(dir);
+		return (0);
+	}
 	if (access(dir, F_OK) == 0)
 	{
 		pid = fork();
@@ -33,11 +37,16 @@ int execute(char **argv, char **envp, int sum)
 			{
 				perror("");
 			}
+			free(dir);
+			free(argv);
+			free(argv[0]);
+			exit(0);
 		}
 		else
 		{
 			waitpid(pid, &status, WUNTRACED);
 		}
+		free(dir);
 	}
 	else
 	{
@@ -72,10 +81,20 @@ int main(int argc, char __attribute__((__unused__))**argv, char **envp)
 		av = tokenize(line);
 		if (line == NULL)
 		{
+			free(line);
+			free(av);
+			return (0);
+		}
+		if (av == NULL)
+		{
+			free(line);
+			free(av);
 			return (0);
 		}
 		if (_strcmp(av[0], "exit") == 0)
 		{
+			free(line);
+			free(av);
 			exit(0);
 		}
 		if (_strcmp(av[0], "env") == 0)

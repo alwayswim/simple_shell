@@ -39,7 +39,8 @@ char *get_line(void)
 		{
 			write(STDOUT_FILENO, "\n", 1);
 		}
-		exit(0);
+		free(line);
+		return (0);
 	}
 	if (character == 1)
 	{
@@ -66,6 +67,10 @@ char **tokenize(char *line)
 		return (0);
 	}
 	tok = malloc(sizeof(char *) * size);
+	if (tok == NULL)
+	{
+		return (0);
+	}
 	i = 0;
 	token = strtok(line, " \n");
 	while (token != NULL)

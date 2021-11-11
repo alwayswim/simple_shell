@@ -48,11 +48,16 @@ char **get_env(char *name)
 				rm[j] = _strdup(rmv);
 				j++;
 				rmv = strtok(NULL, "=:");
+				free(rm[j]);
 			}
 			rm[j] = NULL;
+			free(path);
+			free(rm[j]);
 		}
+		free(rm[j]);
 	i++;
 	}
+	free(rm[j]);
 	return (rm);
 }
 /**
@@ -69,6 +74,12 @@ char *get_file(char **argv, char **path)
 	int m;
 	char *cmd;
 
+	if (path == NULL)
+	{
+		free(path);
+		free(argv);
+		return (0);
+	}
 	for (m = 0; path[m] != NULL; m++)
 	{
 		cmd = _strcat(path[m], "/");
@@ -76,6 +87,8 @@ char *get_file(char **argv, char **path)
 		if (access(cmd, F_OK) == 0)
 		{
 			argv[0] = cmd;
+			free(path[0]);
+			free(path);
 		}
 	}
 	return (argv[0]);
